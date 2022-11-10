@@ -1,4 +1,5 @@
 import difflib
+import re
 import pandas as pd
 from IPython.display import display
 
@@ -50,11 +51,25 @@ class Recommender(object):
             index = int(input('Select the index of the movie/serie you meant (0, 1, ...): '))
 
         print(f'These are the best rated movies similar to {movie_choices[index]}')
-
-        movie_row = dataframe.loc[dataframe['MOVIE'] == movie_choices[index]]
-        dataframe = dataframe[dataframe['MOVIE'] != movie_choices[index]]
+        movie_row = dataframe[dataframe['MOVIE'] == movie_choices[index]]
+        dataframe = dataframe[dataframe['MOVIE'].apply(self.regex_filter, args=[movie_choices[index], True])]
 
         dataframe['SIMILARITY'] = (abs(dataframe.iloc[:, 8:].sub(movie_row.iloc[:, 8:].values))).sum(axis=1)
         display(dataframe.sort_values(by=['SIMILARITY', 'IMDB'], ignore_index=True,
                                       ascending=[True, False]).loc[:, 'MOVIE':"IMDB"].head(self.amount))
         return
+
+    @staticmethod
+    def regex_filter(name, my_regex: str, exclude: bool = False):
+        if name:
+            result = re.search(my_regex, name)
+            if result:
+                return True if not exclude else False
+            else:
+                return False if not exclude else True
+        else:
+            return False
+
+
+recommender = Recommender()
+recommender.recommend_film("action", "Avatar")
