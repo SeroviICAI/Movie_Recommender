@@ -1,0 +1,7 @@
+argparse~=1.4.0
+beautifulsoup4~=4.11.1
+pandas~=1.5
+requests~=2.27.1
+tqdm~=4.62.3
+ipython~=8.0.1
+dagster~=1.0.15
