@@ -38,7 +38,7 @@ This command updates the program's "database" for a specific genre. If you don't
 </p>
 This command takes some time, and needs internet connection.
 
-With the config command you 
+With the config command you can alter the amount of films/series to be recommended.
 
 ### Some issues found:
 1. The autocomplete function for movie titles does not work perfect.
