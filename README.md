@@ -40,6 +40,9 @@ This command takes some time, and needs internet connection.
 
 With the config command you can alter the amount of films/series to be recommended.
 
+### Dockerfile:
+Make sure, when running on dockerfile, go on terminal mode, in order to play with its functions.
+
 ### Some issues found:
 1. The autocomplete function for movie titles does not work perfect.
 2. The recommender is yet not very customable.
