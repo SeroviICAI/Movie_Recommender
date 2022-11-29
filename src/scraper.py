@@ -1,16 +1,17 @@
 from multiprocessing.pool import ThreadPool
 import pandas as pd
 import requests
+
 from bs4 import BeautifulSoup
 from dagster import asset
 from typing import List, Tuple
-from tqdm import tqdm
 
+from tqdm import tqdm
 from constants import *
 
 
 @asset
-def scrape_all_genres(number_titles: int = 250) -> List[Tuple[str, pd.DataFrame]]:
+def scrape_all_genres(number_titles: int = 150) -> List[Tuple[str, pd.DataFrame]]:
     print('Downloading all genres...')
     dataframes = []
     for genre in GENRES:
@@ -19,7 +20,7 @@ def scrape_all_genres(number_titles: int = 250) -> List[Tuple[str, pd.DataFrame]
     return dataframes
 
 
-def scrape_genre(genre: str, number_titles: int = 250) -> Tuple[str, pd.DataFrame]:
+def scrape_genre(genre: str, number_titles: int = 150) -> Tuple[str, pd.DataFrame]:
     if genre not in GENRES:
         raise ValueError('Unknown genre. Please enter a valid genre.')
     print(f'Scraping {genre}:')
@@ -39,6 +40,9 @@ def scrape_url(url: str, genre: str, number: int = 0) -> pd.DataFrame:
     # lists
     titles, years, ratings, genres, runtimes, imdb_ratings, metascores, votes = [], [], [], [], [], [], [], []
     webpage = requests.get(url)
+    if webpage.status_code != 200:
+        raise ConnectionError('Please, connect your device to the Internet before using this function.')
+
     soup = BeautifulSoup(webpage.text, 'lxml')
     containers = soup.find_all('div', class_='lister-item mode-advanced')
 
@@ -132,9 +136,3 @@ def genres_to_binary(dataframes: List[Tuple[str, pd.DataFrame]]) -> List[Tuple[s
                                                            fill_value=0).reset_index()
         new_dataframes.append((genre, dataframe))
     return new_dataframes
-
-
-def create_csv(dataframes: List[Tuple[str, pd.DataFrame]]) -> None:
-    for genre, dataframe in dataframes:
-        dataframe.to_csv(SAVE_PATH + genre + '.csv')
-    return None

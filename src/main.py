@@ -3,8 +3,8 @@ import os
 import sys
 
 import pickle
-from recommender import *
-from scraper import *
+from recommender import Recommender
+from update import update_all_genres, update_genre
 
 WORKING_DIR = os.getcwd()
 os.chdir(WORKING_DIR)
@@ -55,12 +55,8 @@ def main():
         elif args.command == 'config':
             recommender.config(args.amount)
         elif args.command == 'update':
-            if args.genre == "-a":
-                containers = genres_to_binary(scrape_all_genres(args.length))
-                create_csv(containers)
-            else:
-                container = genres_to_binary([scrape_genre(args.genre, args.length)])
-                create_csv(container)
+            print(args.genre)
+            update_genre(args.genre, args.length)
 
     except ValueError as e:
         print('ValueError:', e)

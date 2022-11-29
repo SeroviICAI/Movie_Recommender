@@ -1,8 +1,9 @@
 import difflib
 import re
-from IPython.display import display
+import pandas as pd
 
-from scraper import *
+from IPython.display import display
+from update import update_genre
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.width', 1000)
@@ -25,7 +26,7 @@ class Recommender(object):
             dataframe = pd.read_csv(self.DATA_PATH + genre + '.csv')
         except FileNotFoundError:
             print("Genre not found. Trying to download from source...")
-            create_csv(genres_to_binary([scrape_genre(genre)]))
+            update_genre(genre, 150)
             dataframe = pd.read_csv(self.DATA_PATH + genre + '.csv')
             print()
 
